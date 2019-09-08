@@ -1,0 +1,121 @@
+Sub hw2_behnam()
+' format output cells , I copied this from recording a formatting macro
+
+    Columns("N:N").Select
+    Selection.NumberFormat = "0.00000000"
+    Columns("O:O").Select
+    Selection.NumberFormat = "0.00%"
+    Range("S2:S3").Select
+    Selection.NumberFormat = "0.00%"
+
+' initialize the amount I am using
+J = 2
+sum_each = 0
+Min_decrease = 0
+Max_increase = 0
+Max_volume = 0
+
+' finding last row #
+lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+
+' initialize open year   for first year ,since it will be calculated during the program .
+
+Cells(2, 12).Value = Cells(2, 3).Value
+' name output column and cell
+
+Cells(1, 10).Value = "Ticker"
+Cells(1, 11).Value = "Total stock Volume"
+Cells(1, 12).Value = "open stock price"
+Cells(1, 13).Value = "close stock price"
+Cells(1, 14).Value = "Yearly Change"
+Cells(1, 15).Value = "Percent change"
+Cells(1, 18).Value = "Ticker"
+Cells(1, 19).Value = "Value"
+Cells(2, 17).Value = "Greatest % increase"
+Cells(3, 17).Value = "Greatest % decrease"
+Cells(4, 17).Value = "Greatest Total Volume"
+
+
+
+For i = 2 To lastrow
+
+' fill out the Total Volume and ticker #
+stock_current = Cells(i, 1).Value
+Stock_next = Cells(i + 1, 1).Value
+amount = Cells(i, 7).Value
+If stock_current = Stock_next Then
+sum_each = sum_each + amount
+
+Else
+sum_each = sum_each + amount
+Cells(J, 10).Value = stock_current
+Cells(J, 11).Value = sum_each
+
+' fill out the open and close  and their difference  and format color  the differnece
+
+close_price = Cells(i, 6).Value
+Cells(J, 13).Value = close_price
+Cells(J, 14).Value = Cells(J, 13).Value - Cells(J, 12).Value
+If Cells(J, 14).Value > 0 Then
+    Cells(J, 14).Interior.ColorIndex = 4
+Else
+    Cells(J, 14).Interior.ColorIndex = 3
+       
+       End If
+' prevent dividing by 0  in caculation the percentage
+
+If Cells(J, 12).Value <> 0 Then
+
+    Cells(J, 15).Value = Cells(J, 14).Value / Cells(J, 12).Value
+Else
+    Cells(J, 15).Value = 0
+
+End If
+
+' finding Max increase
+If Cells(J, 15).Value > Max_increase Then
+    Max_increase = Cells(J, 15).Value
+    Cells(2, 19).Value = Max_increase
+    Cells(2, 18).Value = Cells(J, 10).Value
+ End If
+
+' finding min decrease
+If Cells(J, 15).Value < Min_decrease Then
+    Min_decrease = Cells(J, 15).Value
+    Cells(3, 19).Value = Min_decrease
+    Cells(3, 18).Value = Cells(J, 10).Value
+ End If
+ 
+ ' finding Max volume
+ 
+ If Cells(J, 11).Value > Max_volume Then
+    Max_volume = Cells(J, 11).Value
+    Cells(4, 19).Value = Max_volume
+    Cells(4, 18).Value = Cells(J, 10).Value
+ End If
+
+' update for next loop
+J = J + 1
+sum_each = 0
+open_price = Cells(i + 1, 3).Value
+
+Cells(J, 12).Value = open_price
+
+End If
+
+
+Next i
+
+' final formatting
+
+    Columns("K:K").EntireColumn.AutoFit
+    Columns("L:L").EntireColumn.AutoFit
+    Columns("M:M").EntireColumn.AutoFit
+    Columns("N:N").EntireColumn.AutoFit
+    Columns("O:O").EntireColumn.AutoFit
+    Columns("Q:Q").EntireColumn.AutoFit
+    
+    
+    
+End Sub
+
